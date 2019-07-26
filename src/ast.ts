@@ -8,17 +8,21 @@ interface ExpressionNode {
 type Expression =
     | JSXElement
     | JSXComponent
+    | Unary
     | Binary
+    | DefaultValue
     | Condition
     | Call
     | Foreach
-    | RenderProps
+    | FunctionExpression
+    | ActionCallback
     | IdentifierRef
     | FileRef
     | NamedAccess
     | ElementAccess
     | StringConcat
     | Literal
+    | RegexpLiteral
     | ObjectLiteral
     | ArrayLiteral;
 
@@ -36,12 +40,42 @@ interface IdentifierRef extends ExpressionNode {
     };
 }
 
+interface Literal extends ExpressionNode {
+    kind: 'Literal';
+    params: {
+        value: string | number | boolean | null | undefined;
+    };
+}
+
+interface RegexpLiteral extends ExpressionNode {
+    kind: 'RegexpLiteral';
+    params: {
+        pattern: string;
+        flags: string;
+    };
+}
+
+interface Unary extends ExpressionNode {
+    kind: 'Unary';
+    params: {
+        operator: '!' | '+';
+        argument: Expression;
+    };
+}
+
 interface Binary extends ExpressionNode {
     kind: 'Binary';
     params: {
         left: Expression;
-        operator: '+' | '-' | '*' | '/' | '**' | '&&' | '||' | '>' | '<' | '>=' | '<=' | '===' | '!==';
+        operator: '+' | '-' | '*' | '/' | '**' | '&&' | '||' | '>' | '<' | '>=' | '<=' | '===' | '!==' | 'in';
         right: Expression;
+    };
+}
+
+interface DefaultValue extends ExpressionNode {
+    kind: 'DefaultValue';
+    params: {
+        value: Expression;
     };
 }
 
@@ -49,13 +83,6 @@ interface StringConcat extends ExpressionNode {
     kind: 'StringConcat';
     params: {
         values: Expression[];
-    };
-}
-
-interface Literal extends ExpressionNode {
-    kind: 'Literal';
-    params: {
-        value: string | number | boolean | null | undefined;
     };
 }
 
@@ -68,20 +95,29 @@ interface Condition extends ExpressionNode {
     };
 }
 
+interface FunctionExpression extends ExpressionNode {
+    kind: 'FunctionExpression';
+    params: {
+        body: Expression;
+        parameters: Parameter[];
+    };
+}
+
+interface ActionCallback extends ExpressionNode {
+    kind: 'ActionCallback';
+    params: {
+        name: string;
+        statements: Expression[];
+        parameters: Parameter[];
+    };
+}
+
 interface Foreach extends ExpressionNode {
     kind: 'Foreach';
     params: {
         child: Expression;
         itemIdent: IdentifierId;
         indexIdent: IdentifierId | null;
-    };
-}
-
-interface RenderProps extends ExpressionNode {
-    kind: 'RenderProps';
-    params: {
-        params: Parameter[];
-        body: Expression;
     };
 }
 

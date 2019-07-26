@@ -1,13 +1,19 @@
 type NonNullableType =
     | NumberType
     | StringType
+    | StringLiteralType
     | BooleanType
+    | RegexpType
+    | DateType
+    | ClassType
     | ObjectType
     | ArrayType
+    | StringUnionType
     | UnionType
     | IntersectionType
     | FunctionType
-    | JSXElementType;
+    | JSXElementType
+    | JSXComponentType;
 
 type Type = NonNullableType | MaybeType;
 
@@ -20,29 +26,48 @@ interface TypeNode {
 
 interface NumberType extends TypeNode {
     kind: 'NumberType';
-    params: {
-        literal: number | null;
-    };
+    params: undefined;
 }
 
 interface StringType extends TypeNode {
     kind: 'StringType';
+    params: undefined;
+}
+
+interface StringLiteralType extends TypeNode {
+    kind: 'StringLiteralType';
     params: {
-        literal: string | null;
+        value: string;
     };
 }
 
 interface BooleanType extends TypeNode {
     kind: 'BooleanType';
-    params: {
-        literal: boolean | null;
-    };
+    params: undefined;
+}
+
+interface RegexpType extends TypeNode {
+    kind: 'RegexpType';
+    params: undefined;
+}
+
+interface DateType extends TypeNode {
+    kind: 'DateType';
+    params: undefined;
 }
 
 interface ObjectType extends TypeNode {
     kind: 'ObjectType';
     params: {
         name: string | null;
+        props: PropertyType[];
+    };
+}
+
+interface ClassType extends TypeNode {
+    kind: 'ObjectType';
+    params: {
+        name: string;
         props: PropertyType[];
     };
 }
@@ -70,6 +95,14 @@ interface ArrayType extends TypeNode {
     kind: 'ArrayType';
     params: {
         elementTypeId: TypeId;
+    };
+}
+
+interface StringUnionType extends TypeNode {
+    kind: 'StringUnionType';
+    params: {
+        name: string | null;
+        values: string[];
     };
 }
 
@@ -106,4 +139,13 @@ type ParameterType = {
 
 interface JSXElementType extends TypeNode {
     kind: 'JSXElementType';
+    params: {
+        componentId?: ComponentId;
+    };
+}
+
+interface JSXComponentType extends JSXElementType {
+    params: {
+        componentId: ComponentId;
+    };
 }
