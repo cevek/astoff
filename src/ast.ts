@@ -8,6 +8,7 @@ interface ExpressionNode {
 type Expression =
     | JSXElement
     | JSXComponent
+    | Paren
     | Unary
     | Binary
     | DefaultValue
@@ -40,6 +41,12 @@ interface IdentifierRef extends ExpressionNode {
     };
 }
 
+interface Paren extends ExpressionNode {
+    kind: 'Paren';
+    params: {
+        value: Expression;
+    };
+}
 interface Literal extends ExpressionNode {
     kind: 'Literal';
     params: {
