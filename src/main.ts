@@ -7,7 +7,6 @@ type MethodId = 'MethodId';
 type FunctionId = 'FunctionId';
 type TypeId = 'TypeId';
 type ResourceId = 'FileId';
-type CSSVarId = 'CSSVarId';
 
 type ComponentDeclaration = {
     id: ComponentId;
@@ -38,6 +37,9 @@ type Resource = {
 type AST = {
     css: {
         vars: {[P in CSSVarId]: CSSVar};
+        dollarVars: {[P in CSSDollarVarId]: CSSDollarVar};
+        mixins: {[P in CSSMixinId]: CSSMixin};
+        declarations: {[P in CSSClassDeclarationId]: CSSClassDeclaration};
     };
     scopes: {[P in ScopeId]: Scope};
     files: {[P in ResourceId]: Resource};
@@ -50,4 +52,3 @@ type AST = {
 type Calculated = {
     properties: {[P in PropertyId]: PropertyType};
 };
-
